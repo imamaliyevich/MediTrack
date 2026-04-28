@@ -66,7 +66,12 @@ NEXTAUTH_SECRET=your-generated-secret
 
 ### Build Xatoliklari
 ```bash
+# TypeScript muammosi:
+# 1. package.json'da typescript dependencies'da ekanini tekshiring
+# 2. Node version 18 ekanini tekshiring
+
 # Local'da test qilish:
+npm ci
 npm run build
 npm start
 
@@ -74,6 +79,12 @@ npm start
 rm -rf node_modules package-lock.json
 npm install
 ```
+
+### Node Version Muammosi
+Render'da Node version 24 o'rniga 18 ishlatish kerak:
+1. Service Settings > Environment
+2. Node Version: `18` (aniq!)
+3. Build Command: `npm ci && npm run build`
 
 ### Runtime Xatoliklari
 - Render logs'ni tekshiring

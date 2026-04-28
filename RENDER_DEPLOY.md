@@ -48,7 +48,7 @@ NEXTAUTH_SECRET=your-secret-key-here
 - **Root Directory**: `.` (agar loyiha root'da bo'lsa)
 - **Build Command**: 
   ```bash
-  npm install && npm run build
+  npm ci && npm run build
   ```
 - **Start Command**:
   ```bash
@@ -56,7 +56,7 @@ NEXTAUTH_SECRET=your-secret-key-here
   ```
 
 #### Advanced Settings:
-- **Node Version**: `18` (yoki `20`)
+- **Node Version**: `18` (muhim: 18 versiyasini tanlang)
 - **Auto-Deploy**: `Yes` (har commit'da avtomatik deploy)
 
 ## 3. Environment Variables Sozlash
@@ -121,14 +121,25 @@ https://your-app-name.onrender.com
 
 #### Build Xatoliklari:
 ```bash
-# Agar TypeScript xatoliklari bo'lsa:
-npm run build
-# Local'da test qiling
-
-# Agar dependency xatoliklari bo'lsa:
+# TypeScript xatoliklari uchun:
+# 1. Dependencies'ni tekshiring
 npm install
-npm audit fix
+
+# 2. Local'da build test qiling
+npm run build
+
+# 3. Agar TypeScript xatoliklari bo'lsa:
+# package.json'da typescript va @types/* dependencies'da bo'lishi kerak
+
+# 4. Node version'ni tekshiring
+node --version  # 18.x.x bo'lishi kerak
 ```
+
+#### Render'da Node Version Sozlash:
+1. Render Dashboard > Service Settings
+2. "Environment" tab
+3. Node Version: `18` (aniq 18 ni tanlang, 24 emas!)
+4. Build Command: `npm ci && npm run build`
 
 #### Environment Variable Xatoliklari:
 - Render'da Environment variables to'g'ri sozlanganini tekshiring

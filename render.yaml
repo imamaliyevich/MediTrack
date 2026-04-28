@@ -3,8 +3,10 @@ services:
     name: medication-tracker
     env: node
     plan: free
-    buildCommand: npm install && npm run build
+    region: oregon
+    buildCommand: npm ci && npm run build
     startCommand: npm start
+    nodeVersion: "18"
     envVars:
       - key: NODE_ENV
         value: production

@@ -228,6 +228,28 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
     window.location.href = emailUrl;
   };
 
+  const handleRefreshLink = (patient: Patient) => {
+    // Yangi unique ID yaratish (timestamp bilan)
+    const timestamp = Date.now();
+    const newPatientId = `${patient.contract?.patientName.replace(/\s+/g, '').toLowerCase()}-${timestamp}`;
+    
+    // Yangi link yaratish
+    const newLink = generatePatientLink(newPatientId);
+    
+    // Yangi linkni ko'rsatish
+    setGeneratedLink(newLink);
+    
+    // Agar modal ochiq bo'lmasa, ochish
+    if (!showLinkModal) {
+      setShowLinkModal(true);
+    }
+    
+    // Copy holatini reset qilish
+    setCopiedLink(false);
+    
+    console.log(`Yangi link yaratildi: ${patient.contract?.patientName} uchun`);
+  };
+
   const addScheduleTime = (medIndex: number) => {
     const newMedications = [...medications];
     newMedications[medIndex].schedule.push('12:00');
@@ -555,6 +577,18 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
+                            handleRefreshLink(patient);
+                          }}
+                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-smooth"
+                          title="Linkni Yangilash"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                          </svg>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
                             handleEdit(patient);
                           }}
                           className="p-2 text-warning hover:bg-warning hover:bg-opacity-10 rounded-lg transition-smooth"
@@ -646,9 +680,25 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
             </div>
 
             <div className="mb-6">
-              <p className="text-sm text-gray-600 mb-3">
-                Ushbu linkni bemorga yuboring. Bemor shu link orqali to'g'ridan-to'g'ri o'z interfeysi ga kiradi:
-              </p>
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-sm text-gray-600">
+                  Ushbu linkni bemorga yuboring. Bemor shu link orqali to'g'ridan-to'g'ri o'z interfeysi ga kiradi:
+                </p>
+                <button
+                  onClick={() => {
+                    const currentPatient = patients.find(p => generatePatientLink(p.id) === generatedLink);
+                    if (currentPatient) {
+                      handleRefreshLink(currentPatient);
+                    }
+                  }}
+                  className="p-1 text-green-600 hover:bg-green-50 rounded transition-smooth"
+                  title="Linkni Yangilash"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+              </div>
               <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 break-all text-sm text-gray-900 font-mono">
                 {generatedLink}
               </div>

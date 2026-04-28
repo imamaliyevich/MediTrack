@@ -4,9 +4,9 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: npm ci && npm run build
+    buildCommand: npm install && npm run build
     startCommand: npm start
-    nodeVersion: "18"
+    nodeVersion: "20"
     envVars:
       - key: NODE_ENV
         value: production

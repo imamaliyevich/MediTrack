@@ -6,11 +6,6 @@ const nextConfig = {
   poweredByHeader: false,
   generateEtags: false,
   
-  // Performance optimizations
-  experimental: {
-    optimizeCss: true,
-  },
-  
   // Security headers
   async headers() {
     return [

@@ -202,7 +202,11 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
 
   const handleConfirm = (scheduledTime: string, withPhoto: boolean) => {
     // Darhol lokal state'ni yangilaymiz
-    setTakenTimes(prev => new Set([...prev, scheduledTime]));
+    setTakenTimes(prev => {
+      const newSet = new Set(prev);
+      newSet.add(scheduledTime);
+      return newSet;
+    });
     
     stopAlarm();
     setIsAlarmStopped(true); // Dori qabul qilinganda ham to'xtatilganini belgilaymiz

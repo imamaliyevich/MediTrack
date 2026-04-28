@@ -21,7 +21,9 @@ export default function FamilyPage() {
 
   useEffect(() => {
     if (contract) {
-      const totalDoses = contract.schedule.length * 7;
+      // Barcha dorilarning jami schedule'larini hisoblash
+      const totalSchedules = contract.medications.reduce((total, med) => total + med.schedule.length, 0);
+      const totalDoses = totalSchedules * 7; // 7 kun uchun
       const takenDoses = logs.filter(l => !l.missed).length;
       setStats(calculateAdherence(takenDoses, totalDoses));
     }

@@ -118,12 +118,12 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
           dosage: med.dosage,
           schedule: med.schedule,
           durationDays: med.durationDays,
-          startDate: startDate.toISOString()
+          startDate: startDate.toISOString().split('T')[0]
         })),
         adherenceTarget: formData.adherenceTarget,
         consequences: formData.consequences,
-        startDate: startDate.toISOString(),
-        endDate: endDate.toISOString(),
+        startDate: startDate.toISOString().split('T')[0],
+        endDate: endDate,
         signed: false
       };
       
@@ -143,7 +143,7 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
     const maxDuration = Math.max(...meds.map(m => m.durationDays));
     const endDate = new Date();
     endDate.setDate(endDate.getDate() + maxDuration);
-    return endDate;
+    return endDate.toISOString().split('T')[0]; // YYYY-MM-DD format
   };
 
   const resetForm = () => {

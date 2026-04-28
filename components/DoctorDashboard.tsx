@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TreatmentContract } from '@/types';
-import { generatePatientLink, copyToClipboard } from '@/lib/linkGenerator';
+import { generatePatientLink, copyToClipboard, generateUniquePatientId } from '@/lib/linkGenerator';
 
 interface Patient {
   id: string;
@@ -124,7 +124,11 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
         consequences: formData.consequences,
         startDate: startDate.toISOString().split('T')[0],
         endDate: endDate,
-        signed: false
+        signed: false,
+        linkAccessCount: 0,
+        linkAccessLimit: 0, // 0 = cheksiz
+        linkCreatedAt: new Date().toISOString(),
+        linkLastAccessedAt: undefined
       };
       
       const patientLink = generatePatientLink(patientId);
@@ -228,26 +232,50 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
     window.location.href = emailUrl;
   };
 
-  const handleRefreshLink = (patient: Patient) => {
-    // Yangi unique ID yaratish (timestamp bilan)
-    const timestamp = Date.now();
-    const newPatientId = `${patient.contract?.patientName.replace(/\s+/g, '').toLowerCase()}-${timestamp}`;
+  const handleRefreshLink = async (patient: Patient) => {
+    if (!patient.contract) return;
     
-    // Yangi link yaratish
-    const newLink = generatePatientLink(newPatientId);
+    // Yangi unique ID yaratish
+    const newPatientId = generateUniquePatientId(patient.contract.patientName);
     
-    // Yangi linkni ko'rsatish
-    setGeneratedLink(newLink);
+    // Shartnomani yangi ID bilan yangilash
+    const updatedContract: TreatmentContract = {
+      ...patient.contract,
+      id: newPatientId,
+      linkAccessCount: 0, // Reset qilish
+      linkCreatedAt: new Date().toISOString(),
+      linkLastAccessedAt: undefined
+    };
     
-    // Agar modal ochiq bo'lmasa, ochish
-    if (!showLinkModal) {
-      setShowLinkModal(true);
+    try {
+      // Eski shartnomani o'chirish
+      await onDeleteContract(patient.id);
+      
+      // Yangi ID bilan shartnomani yaratish
+      await onCreateContract(updatedContract);
+      
+      // Yangi link yaratish
+      const newLink = generatePatientLink(newPatientId);
+      
+      // Yangi linkni ko'rsatish
+      setGeneratedLink(newLink);
+      
+      // Agar modal ochiq bo'lmasa, ochish
+      if (!showLinkModal) {
+        setShowLinkModal(true);
+      }
+      
+      // Copy holatini reset qilish
+      setCopiedLink(false);
+      
+      // Ma'lumotlarni yangilash
+      onRefresh();
+      
+      console.log(`Yangi link yaratildi: ${patient.contract.patientName} uchun`);
+    } catch (error) {
+      console.error('Link yangilashda xatolik:', error);
+      alert('Link yangilashda xatolik yuz berdi');
     }
-    
-    // Copy holatini reset qilish
-    setCopiedLink(false);
-    
-    console.log(`Yangi link yaratildi: ${patient.contract?.patientName} uchun`);
   };
 
   const addScheduleTime = (medIndex: number) => {
@@ -650,6 +678,27 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                             {patient.contract.signed ? '✓ Imzolangan' : '⏳ Imzo kutilmoqda'}
                           </p>
                         </div>
+                        <div className="p-3 bg-blue-50 rounded-lg">
+                          <p className="text-xs text-gray-500 mb-2">Link Statistikasi:</p>
+                          <div className="space-y-1">
+                            <p className="text-sm text-gray-700">
+                              📊 Foydalanish: <span className="font-semibold">{patient.contract.linkAccessCount || 0}</span> marta
+                              {patient.contract.linkAccessLimit && patient.contract.linkAccessLimit > 0 && (
+                                <span className="text-gray-500"> / {patient.contract.linkAccessLimit} ta</span>
+                              )}
+                            </p>
+                            {patient.contract.linkCreatedAt && (
+                              <p className="text-xs text-gray-600">
+                                🕐 Yaratilgan: {new Date(patient.contract.linkCreatedAt).toLocaleString('uz-UZ')}
+                              </p>
+                            )}
+                            {patient.contract.linkLastAccessedAt && (
+                              <p className="text-xs text-gray-600">
+                                🔗 Oxirgi kirish: {new Date(patient.contract.linkLastAccessedAt).toLocaleString('uz-UZ')}
+                              </p>
+                            )}
+                          </div>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -680,28 +729,70 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
             </div>
 
             <div className="mb-6">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-sm text-gray-600">
-                  Ushbu linkni bemorga yuboring. Bemor shu link orqali to'g'ridan-to'g'ri o'z interfeysi ga kiradi:
-                </p>
-                <button
-                  onClick={() => {
-                    const currentPatient = patients.find(p => generatePatientLink(p.id) === generatedLink);
-                    if (currentPatient) {
-                      handleRefreshLink(currentPatient);
-                    }
-                  }}
-                  className="p-1 text-green-600 hover:bg-green-50 rounded transition-smooth"
-                  title="Linkni Yangilash"
-                >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                </button>
+              <div className="mb-3">
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-sm text-gray-600">
+                    Ushbu linkni bemorga yuboring:
+                  </p>
+                  <button
+                    onClick={() => {
+                      const currentPatient = patients.find(p => generatePatientLink(p.id) === generatedLink);
+                      if (currentPatient) {
+                        handleRefreshLink(currentPatient);
+                      }
+                    }}
+                    className="flex items-center gap-1 px-2 py-1 text-xs text-green-600 hover:bg-green-50 rounded transition-smooth"
+                    title="Yangi Link Yaratish"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    Yangi Link
+                  </button>
+                </div>
               </div>
-              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 break-all text-sm text-gray-900 font-mono">
+              <div className="p-3 bg-gray-50 rounded-lg border border-gray-200 break-all text-sm text-gray-900 font-mono mb-3">
                 {generatedLink}
               </div>
+              
+              {/* Link statistikasi */}
+              {(() => {
+                const currentPatient = patients.find(p => generatePatientLink(p.id) === generatedLink);
+                if (currentPatient?.contract) {
+                  return (
+                    <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                      <p className="text-xs font-medium text-gray-700 mb-2">📊 Link Statistikasi:</p>
+                      <div className="space-y-1 text-xs text-gray-600">
+                        <p>
+                          Foydalanish: <span className="font-semibold text-gray-900">{currentPatient.contract.linkAccessCount || 0}</span> marta
+                          {currentPatient.contract.linkAccessLimit && currentPatient.contract.linkAccessLimit > 0 && (
+                            <span> / {currentPatient.contract.linkAccessLimit} ta</span>
+                          )}
+                        </p>
+                        {currentPatient.contract.linkCreatedAt && (
+                          <p>Yaratilgan: {new Date(currentPatient.contract.linkCreatedAt).toLocaleString('uz-UZ', { 
+                            day: '2-digit', 
+                            month: '2-digit', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}</p>
+                        )}
+                        {currentPatient.contract.linkLastAccessedAt && (
+                          <p>Oxirgi kirish: {new Date(currentPatient.contract.linkLastAccessedAt).toLocaleString('uz-UZ', { 
+                            day: '2-digit', 
+                            month: '2-digit', 
+                            year: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit'
+                          })}</p>
+                        )}
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
             </div>
 
             <div className="flex flex-col gap-3">

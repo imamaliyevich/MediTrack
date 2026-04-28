@@ -60,10 +60,33 @@ export default function PatientPage() {
       const contractResponse = await axios.get(`/api/contracts/${patientId}`);
       const contractData = contractResponse.data;
       
+      // Link access counterni oshirish
+      if (contractData) {
+        const updatedContract = {
+          ...contractData,
+          linkAccessCount: (contractData.linkAccessCount || 0) + 1,
+          linkLastAccessedAt: new Date().toISOString()
+        };
+        
+        // Agar limit belgilangan bo'lsa va oshib ketgan bo'lsa, xatolik
+        if (contractData.linkAccessLimit && contractData.linkAccessLimit > 0) {
+          if ((contractData.linkAccessCount || 0) >= contractData.linkAccessLimit) {
+            setView('notfound');
+            return;
+          }
+        }
+        
+        // Backend'da yangilash (background'da)
+        axios.put(`/api/contracts/${patientId}`, updatedContract).catch(err => {
+          console.error('Error updating link access count:', err);
+        });
+        
+        setContract(updatedContract);
+      }
+      
       const logsResponse = await axios.get(`/api/logs/${patientId}`);
       const logsData = logsResponse.data;
       
-      setContract(contractData);
       setLogs(logsData);
       setView(contractData.signed ? 'dashboard' : 'contract');
       
@@ -134,9 +157,9 @@ export default function PatientPage() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Link topilmadi</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">Link Ishlamayapti</h2>
           <p className="text-gray-600 mb-6">
-            Siz kiritgan link mavjud emas yoki noto'g'ri. Iltimos, to'g'ri linkni tekshiring yoki shifokoringizga murojaat qiling.
+            Bu link mavjud emas, muddati tugagan yoki foydalanish limiti tugagan. Iltimos, shifokoringizdan yangi link so'rang.
           </p>
           <div className="space-y-3">
             <button
@@ -146,7 +169,7 @@ export default function PatientPage() {
               Qayta urinish
             </button>
             <p className="text-sm text-gray-500">
-              Yordam kerakmi? Shifokoringizga murojaat qiling
+              💡 Shifokoringiz sizga yangi link yuborishi mumkin
             </p>
           </div>
         </div>

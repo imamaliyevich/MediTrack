@@ -17,6 +17,10 @@ export interface TreatmentContract {
   startDate: string;
   endDate: string;
   signed: boolean;
+  linkAccessCount?: number; // Linkdan necha marta foydalanilgani
+  linkAccessLimit?: number; // Link necha marta ishlatilishi mumkin (0 = cheksiz)
+  linkCreatedAt?: string; // Link qachon yaratilgani
+  linkLastAccessedAt?: string; // Link oxirgi marta qachon ishlatilgani
 }
 
 export interface MedicationLog {

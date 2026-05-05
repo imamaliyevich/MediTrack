@@ -318,50 +318,53 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Shifokor Paneli</h1>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-gray-600">
+    <div className="min-h-screen bg-gray-50 safe-top safe-bottom">
+      <div className="max-w-6xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
+        {/* Header - Mobile optimized */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Shifokor Paneli</h1>
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3">
+            <span className="text-sm text-gray-600 text-center sm:text-left">
               Dr. {localStorage.getItem('doctorName') || 'Shifokor'}
             </span>
-            <button
-              onClick={onRefresh}
-              className="px-3 py-2 text-sm text-primary hover:underline flex items-center gap-2"
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-              </svg>
-              Yangilash
-            </button>
-            {onLogout && (
+            <div className="flex gap-2">
               <button
-                onClick={onLogout}
-                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-smooth text-sm"
+                onClick={onRefresh}
+                className="flex-1 sm:flex-none px-3 py-2 text-sm text-primary hover:underline flex items-center justify-center gap-2 border border-primary rounded-lg sm:border-none sm:rounded-none"
               >
-                Chiqish
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span className="sm:inline">Yangilash</span>
               </button>
-            )}
+              {onLogout && (
+                <button
+                  onClick={onLogout}
+                  className="flex-1 sm:flex-none btn-mobile-sm bg-red-500 text-white hover:bg-red-600"
+                >
+                  Chiqish
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
-        <div className="grid gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-center mb-4">
+        <div className="grid gap-4 sm:gap-6 mb-4 sm:mb-6">
+          <div className="card-mobile sm:bg-white sm:rounded-lg sm:shadow-md sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-3 sm:space-y-0">
               <h2 className="text-lg font-semibold text-gray-900">Bemorlar Ro'yxati</h2>
               <button
                 onClick={handleNewContract}
-                className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-smooth"
+                className="btn-mobile bg-primary text-white hover:bg-blue-600 w-full sm:w-auto"
               >
                 {showCreateForm ? 'Yopish' : '+ Yangi Shartnoma'}
               </button>
             </div>
 
             {showCreateForm && (
-              <form onSubmit={handleSubmit} className="mb-6 p-6 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-semibold text-gray-900">
+              <form onSubmit={handleSubmit} className="mb-6 p-4 sm:p-6 bg-gray-50 rounded-lg border border-gray-200">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-2 sm:space-y-0">
+                  <h3 className="font-semibold text-gray-900 text-center sm:text-left">
                     {editingContract ? 'Shartnomani Tahrirlash' : 'Yangi Davolash Shartnomasi'}
                   </h3>
                   {editingContract && (
@@ -372,17 +375,17 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                         setShowCreateForm(false);
                         resetForm();
                       }}
-                      className="text-sm text-gray-500 hover:text-gray-700"
+                      className="text-sm text-gray-500 hover:text-gray-700 self-center sm:self-auto"
                     >
                       Bekor qilish
                     </button>
                   )}
                 </div>
                 
-                <div className="grid gap-4">
-                  <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-4 sm:space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Bemor Ismi
                       </label>
                       <input
@@ -390,13 +393,13 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                         required
                         value={formData.patientName}
                         onChange={(e) => setFormData({ ...formData, patientName: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="input-mobile"
                         placeholder="Masalan: Sardor Aliyev"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
                         Shifokor Ismi
                       </label>
                       <input
@@ -404,7 +407,7 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                         required
                         value={formData.doctorName}
                         onChange={(e) => setFormData({ ...formData, doctorName: e.target.value })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        className="input-mobile"
                       />
                     </div>
                   </div>
@@ -417,7 +420,7 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                       <button
                         type="button"
                         onClick={addMedication}
-                        className="text-sm text-primary hover:underline flex items-center gap-1"
+                        className="btn-mobile-sm text-primary border border-primary hover:bg-primary hover:text-white w-full sm:w-auto"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -572,49 +575,70 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                 patients.map((patient) => (
                   <div
                     key={patient.id}
-                    className="p-4 border border-gray-200 rounded-lg hover:border-primary transition-smooth"
+                    className="card-mobile hover:border-primary transition-smooth"
                   >
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
                       <div 
                         className="flex-1 cursor-pointer"
                         onClick={() => setSelectedPatient(selectedPatient?.id === patient.id ? null : patient)}
                       >
-                        <h3 className="font-semibold text-gray-900">{patient.name}</h3>
+                        <h3 className="font-semibold text-gray-900 text-lg">{patient.name}</h3>
                         {patient.contract && patient.contract.medications && (
                           <p className="text-sm text-gray-600 mt-1">
                             {patient.contract.medications.length} ta dori
                           </p>
                         )}
                       </div>
-                      <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            const link = generatePatientLink(patient.id);
-                            setGeneratedLink(link);
-                            setShowLinkModal(true);
-                          }}
-                          className="p-2 text-primary hover:bg-primary hover:bg-opacity-10 rounded-lg transition-smooth"
-                          title="Link Ko'rish"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                          </svg>
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRefreshLink(patient);
-                          }}
-                          className="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-smooth"
-                          title="Linkni Yangilash"
-                        >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                          </svg>
-                        </button>
-                        <button
+                      
+                      {/* Mobile: Stats and Actions in separate rows */}
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+                        {/* Stats */}
+                        <div className="flex items-center justify-between sm:justify-end gap-4">
+                          <div className="text-center sm:text-right">
+                            <p className="text-2xl font-bold text-gray-900">{patient.adherenceRate.toFixed(0)}%</p>
+                            <p className={`text-xs font-medium ${
+                              patient.riskLevel === 'green' ? 'text-success' :
+                              patient.riskLevel === 'yellow' ? 'text-warning' : 'text-danger'
+                            }`}>
+                              {patient.riskLevel === 'green' ? 'Yaxshi' :
+                               patient.riskLevel === 'yellow' ? 'Xavf Ostida' : 'Jiddiy'}
+                            </p>
+                          </div>
+                          <div className={`w-4 h-4 rounded-full ${
+                            patient.riskLevel === 'green' ? 'bg-success' :
+                            patient.riskLevel === 'yellow' ? 'bg-warning' : 'bg-danger'
+                          }`} />
+                        </div>
+                        
+                        {/* Actions */}
+                        <div className="flex items-center justify-center gap-2 flex-wrap">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const link = generatePatientLink(patient.id);
+                              setGeneratedLink(link);
+                              setShowLinkModal(true);
+                            }}
+                            className="p-3 text-primary hover:bg-primary hover:bg-opacity-10 rounded-lg transition-smooth"
+                            title="Link Ko'rish"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                            </svg>
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRefreshLink(patient);
+                            }}
+                            className="p-3 text-green-600 hover:bg-green-50 rounded-lg transition-smooth"
+                            title="Linkni Yangilash"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                          </button>
+                          <button
                           onClick={(e) => {
                             e.stopPropagation();
                             handleEdit(patient);
@@ -709,10 +733,10 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
         </div>
       </div>
 
-      {/* Link Modal */}
+      {/* Link Modal - Mobile Responsive */}
       {showLinkModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-2xl w-full max-w-md p-6">
+        <div className="modal-mobile">
+          <div className="modal-content-mobile p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold text-gray-900">Bemor Uchun Link</h3>
               <button 
@@ -720,7 +744,7 @@ export default function DoctorDashboard({ onCreateContract, onUpdateContract, on
                   setShowLinkModal(false);
                   setCopiedLink(false);
                 }}
-                className="text-gray-400 hover:text-gray-600"
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

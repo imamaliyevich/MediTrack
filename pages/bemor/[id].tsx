@@ -213,13 +213,14 @@ export default function PatientPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Davolash Paneli</h1>
+    <div className="min-h-screen bg-gray-50 safe-top safe-bottom">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:px-6 sm:py-6">
+        {/* Header - Mobile optimized */}
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 text-center sm:text-left">Davolash Paneli</h1>
           <button
             onClick={() => setShowAIChat(true)}
-            className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-smooth flex items-center gap-2"
+            className="btn-mobile bg-primary text-white hover:bg-blue-600 w-full sm:w-auto"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -228,29 +229,31 @@ export default function PatientPage() {
           </button>
         </div>
 
-        <div className="grid gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex justify-between items-start mb-4">
-              <div>
+        <div className="space-y-4 sm:space-y-6 mb-4 sm:mb-6">
+          <div className="card-mobile">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-4 space-y-3 sm:space-y-0">
+              <div className="text-center sm:text-left">
                 <h2 className="text-lg font-semibold text-gray-900 mb-1">Rioya Holati</h2>
                 <p className="text-sm text-gray-500">
                   Davolanish: {new Date(contract.startDate).toLocaleDateString('uz-UZ')} - {new Date(contract.endDate).toLocaleDateString('uz-UZ')}
                 </p>
               </div>
-              <RiskIndicator level={stats.riskLevel} adherenceRate={stats.adherenceRate} />
+              <div className="flex justify-center sm:justify-end">
+                <RiskIndicator level={stats.riskLevel} adherenceRate={stats.adherenceRate} />
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mt-6">
               <div className="text-center">
-                <p className="text-2xl font-bold text-success">{stats.takenDoses}</p>
+                <p className="text-xl sm:text-2xl font-bold text-success">{stats.takenDoses}</p>
                 <p className="text-xs text-gray-500 mt-1">Qabul qilindi</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-gray-900">{stats.totalDoses}</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.totalDoses}</p>
                 <p className="text-xs text-gray-500 mt-1">Jami kerak</p>
               </div>
               <div className="text-center">
-                <p className="text-2xl font-bold text-danger">{stats.missedCount}</p>
+                <p className="text-xl sm:text-2xl font-bold text-danger">{stats.missedCount}</p>
                 <p className="text-xs text-gray-500 mt-1">O'tkazildi</p>
               </div>
             </div>

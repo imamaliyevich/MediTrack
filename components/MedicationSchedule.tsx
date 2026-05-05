@@ -266,28 +266,32 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 border border-gray-200">
+    <div className="card-mobile">
       {isAlarmPlaying && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
-          <div className="animate-pulse">
-            <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4.343 4.343l1.414 1.414m0 0l7.071 7.071m0 0l7.071-7.071m0 0l1.414-1.414M4 12h.01M12 4v.01M20 12h.01M12 20v.01M8 12a4 4 0 108 0 4 4 0 00-8 0z" />
-            </svg>
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="animate-pulse">
+                <svg className="w-6 h-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4.343 4.343l1.414 1.414m0 0l7.071 7.071m0 0l7.071-7.071m0 0l1.414-1.414M4 12h.01M12 4v.01M20 12h.01M12 20v.01M8 12a4 4 0 108 0 4 4 0 00-8 0z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <p className="text-red-800 font-medium">🔔 Dori qabul qilish vaqti!</p>
+                <p className="text-red-600 text-sm">Dorini qabul qiling va tovushni to'xtating</p>
+              </div>
+            </div>
+            <button
+              onClick={stopAlarm}
+              className="btn-mobile-sm bg-red-500 text-white hover:bg-red-600 w-full sm:w-auto"
+            >
+              To'xtatish
+            </button>
           </div>
-          <div className="flex-1">
-            <p className="text-red-800 font-medium">🔔 Dori qabul qilish vaqti!</p>
-            <p className="text-red-600 text-sm">Dorini qabul qiling va tovushni to'xtating</p>
-          </div>
-          <button
-            onClick={stopAlarm}
-            className="px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition-smooth"
-          >
-            To'xtatish
-          </button>
         </div>
       )}
       
-      <div className="mb-4">
+      <div className="mb-4 text-center sm:text-left">
         <h3 className="text-lg font-semibold text-gray-900 mb-1">
           {medication.name} {medication.dosage}
         </h3>
@@ -297,31 +301,31 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
       </div>
 
       <div className="space-y-3">
-        <h4 className="text-sm font-medium text-gray-700">Bugungi Jadval:</h4>
+        <h4 className="text-sm font-medium text-gray-700 text-center sm:text-left">Bugungi Jadval:</h4>
         
         {medication.schedule.map((scheduledTime, index) => {
           const isTaken = isTimeTaken(scheduledTime);
           const canTake = isTimeClose(scheduledTime) && !isTaken;
           
           return (
-            <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div className="flex items-center gap-3">
-                <div className={`w-3 h-3 rounded-full ${
+            <div key={index} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 bg-gray-50 rounded-lg space-y-3 sm:space-y-0">
+              <div className="flex items-center gap-3 justify-center sm:justify-start">
+                <div className={`w-4 h-4 rounded-full ${
                   isTaken ? 'bg-success' : canTake ? 'bg-warning' : 'bg-gray-300'
                 }`} />
-                <div>
-                  <p className="font-medium text-gray-900">{scheduledTime}</p>
-                  <p className="text-xs text-gray-500">
+                <div className="text-center sm:text-left">
+                  <p className="font-medium text-gray-900 text-lg">{scheduledTime}</p>
+                  <p className="text-sm text-gray-500">
                     {isTaken ? 'Qabul qilindi' : canTake ? 'Qabul qilish vaqti' : 'Kutish'}
                   </p>
                 </div>
               </div>
 
               {!isTaken && canTake && (
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
                   <button
                     onClick={() => handleConfirm(scheduledTime, false)}
-                    className="px-4 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-smooth"
+                    className="btn-mobile bg-primary text-white hover:bg-blue-600"
                   >
                     Qabul Qildim
                   </button>
@@ -329,15 +333,15 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
                     onClick={() => {
                       setShowCamera(!showCamera);
                     }}
-                    className="px-3 py-2 border-2 border-primary text-primary rounded-lg text-sm font-medium hover:bg-primary hover:bg-opacity-5 transition-smooth"
+                    className="btn-mobile border-2 border-primary text-primary hover:bg-primary hover:bg-opacity-5"
                   >
-                    📷
+                    📷 Rasm bilan
                   </button>
                 </div>
               )}
 
               {isTaken && (
-                <div className="flex items-center gap-2 text-success">
+                <div className="flex items-center justify-center sm:justify-end gap-2 text-success">
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
@@ -356,14 +360,15 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
             ref={fileInputRef}
             type="file"
             accept="image/*"
+            capture="environment"
             onChange={handleImageSelect}
             className="hidden"
           />
           
           {!imagePreview ? (
-            <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-3">
-              <div className="text-center">
-                <svg className="w-16 h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="aspect-video bg-gray-200 rounded-lg flex items-center justify-center mb-4">
+              <div className="text-center p-4">
+                <svg className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -371,7 +376,7 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
               </div>
             </div>
           ) : (
-            <div className="aspect-video bg-gray-200 rounded-lg mb-3 overflow-hidden">
+            <div className="aspect-video bg-gray-200 rounded-lg mb-4 overflow-hidden">
               <img 
                 src={imagePreview} 
                 alt="Tanlangan rasm" 
@@ -380,10 +385,10 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
             </div>
           )}
           
-          <div className="flex gap-2">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleImageUpload}
-              className="flex-1 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-smooth text-sm"
+              className="btn-mobile bg-blue-500 text-white hover:bg-blue-600"
             >
               📷 Rasm Tanlash
             </button>
@@ -394,7 +399,7 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
                   const scheduledTime = medication.schedule.find(time => isTimeClose(time) && !isTimeTaken(time));
                   if (scheduledTime) handleConfirm(scheduledTime, true);
                 }}
-                className="flex-1 py-2 bg-success text-white rounded-lg font-medium hover:bg-green-600 transition-smooth text-sm"
+                className="btn-mobile bg-success text-white hover:bg-green-600"
               >
                 ✅ Tasdiqlash
               </button>
@@ -404,7 +409,7 @@ export default function MedicationSchedule({ medication, logs, onConfirm }: Medi
       )}
 
       <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-        <p className="text-xs text-gray-600">
+        <p className="text-xs text-gray-600 text-center sm:text-left">
           💡 <span className="font-medium">Eslatma:</span> Dori belgilangan vaqtdan 30 daqiqa oldin yoki keyin qabul qilish mumkin.
         </p>
       </div>
